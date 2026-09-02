@@ -610,8 +610,7 @@
 
 </div>
 
-<script src="prices.js"></script>
-<script src="content.js"></script>
+<script src="edit-me.js"></script>
 <script>
 // ---------------------------------------------------------------------
 // This is a fully static, client-only booking form. There is no backend,
@@ -621,67 +620,16 @@
 // ---------------------------------------------------------------------
 
 // =====================================================================
-// 🛠️  EDIT ME — everything you need to change is right here!
-// =====================================================================
-// This box is the ONLY place you should need to touch to update prices,
-// contact numbers, or the tour name. Just change the text or number
-// between the quotes " " (or after the = sign for numbers), then save.
-// Don't touch anything outside this box unless you know what you're doing.
-// =====================================================================
-
-// The name of your business — shows at the top of the WhatsApp message.
-const BUSINESS_NAME = "Kremchympe Adventures";
-
-// Your WhatsApp number that bookings get sent to.
-// Format: country code + number, NO plus sign, NO spaces, NO dashes.
-// Example for India: 91 then the 10-digit number.
-const WHATSAPP_NUMBER = "919863657412";
-
-// Your UPI ID (for the "pay by UPI" option) and the name that shows
-// when someone scans your QR code or pays by UPI.
-const UPI_ID = "suchiangwining-1@oksbi";
-const UPI_PAYEE_NAME = "Team Kremchympe Official";
-
-// Your bank account details (for the "pay by Bank Transfer" option).
-const BANK_ACCOUNT_NUMBER = "38706256304";
-const BANK_IFSC_CODE = "SBIN0014615";
-
-// 💰 The adult price and any discount now live in prices.js (next to this
-// file). Open prices.js to change the price or turn a discount on/off —
-// no need to touch anything in here.
-
-// How much ONE child (below 10) pays for the tour.
-const CHILD_PRICE = 200;
-
-// The smallest amount someone is allowed to pay right now to hold their spot.
-const MIN_PAY_AMOUNT = 500;
-
-// How many people fit in one shared group/batch.
-const BATCH_SIZE = 8;
-
-// How many days before the tour date someone must book by.
-const ADVANCE_NOTICE_DAYS = 3;
-
-// The list of things included in the tour price.
-// To add one: copy a line and change the words inside the quotes.
-// To remove one: delete its whole line.
-const TOUR_SERVICES = [
-  "4×4 Jeep",
-  "Tour Guide",
-  "First aid & Safety gears",
-  "Adventure Activities",
-  "Entry & Registration Fees",
-  "Lunch"
-];
-// =====================================================================
-// 🛑 END OF EDIT ME BOX — everything below this line is the code that
-// makes the form actually work. No need to change anything past here.
+// Every piece of text, every price, and every business detail on this
+// page is defined in edit-me.js (loaded above). Nothing in this file
+// needs to be touched to update the website — this is just the code
+// that makes the form work.
 // =====================================================================
 
 // ---------------------------------------------------------------------
-// Reads the kremChympe entry from prices.js and works out what price to
-// actually charge. If prices.js hasn't been added or is missing this
-// entry, it safely falls back to a default price instead of breaking.
+// Reads the kremChympe entry from edit-me.js and works out what price
+// to actually charge. If it's missing for any reason, it safely falls
+// back to a default price instead of breaking.
 // ---------------------------------------------------------------------
 function getEffectivePrice(entry){
   const fallback = { regular: 2500, price: 2500, discount: 0, onSale: false };
@@ -707,7 +655,7 @@ function renderPackageDesc(){
   const servicesHtml = TOUR_SERVICES.map(function(s){ return '* ' + s; }).join('\n');
 
   // Build the price line — shows a 🔥 discount badge and the old price
-  // crossed out when a sale is enabled in prices.js, otherwise just the
+  // crossed out when a sale is enabled in edit-me.js, otherwise just the
   // regular price.
   const priceLine = PRICE_INFO.onSale
     ? '🔥 ' + PRICE_INFO.discount + '% OFF\n' +
@@ -887,10 +835,10 @@ if(copyIfscBtn) copyIfscBtn.onclick = function () {
 };
 
 // ---------------------------------------------------------------------
-// Fills in every piece of visitor-facing text from content.js (falls
-// back to sensible English if content.js is missing so the page never
-// breaks), and syncs the UPI ID / bank details shown on the page with
-// the values set in the EDIT ME box above.
+// Fills in every piece of visitor-facing text from edit-me.js (falls
+// back to sensible English if it's missing so the page never breaks),
+// and syncs the UPI ID / bank details shown on the page with the
+// values set in edit-me.js.
 // ---------------------------------------------------------------------
 function setText(id, text){
   const el = document.getElementById(id);
