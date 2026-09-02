@@ -380,7 +380,7 @@
     <div class="card header-card">
       <div class="top-bar"></div>
       <div class="body">
-        <h1>Book Adventure With US</h1>
+        <h1 id="pageHeading">Book Adventure With US</h1>
         <div class="desc-text" id="packageDesc"><!-- filled by renderPackageDesc() --></div>
       </div>
       <div class="required-note">* Indicates required question</div>
@@ -618,16 +618,46 @@
 // everything pre-filled so they can send it straight to the tour guide.
 // ---------------------------------------------------------------------
 
-// Replace with your own WhatsApp business number (country code, no +, no spaces).
+// =====================================================================
+// 🛠️  EDIT ME — everything you need to change is right here!
+// =====================================================================
+// This box is the ONLY place you should need to touch to update prices,
+// contact numbers, or the tour name. Just change the text or number
+// between the quotes " " (or after the = sign for numbers), then save.
+// Don't touch anything outside this box unless you know what you're doing.
+// =====================================================================
+
+// The name of your business — shows at the top of the WhatsApp message.
+const BUSINESS_NAME = "Kremchympe Adventures";
+
+// Your WhatsApp number that bookings get sent to.
+// Format: country code + number, NO plus sign, NO spaces, NO dashes.
+// Example for India: 91 then the 10-digit number.
 const WHATSAPP_NUMBER = "919863657412";
+
+// Your UPI ID (for the "pay by UPI" option) and the name that shows
+// when someone scans your QR code or pays by UPI.
 const UPI_ID = "suchiangwining-1@oksbi";
 const UPI_PAYEE_NAME = "Team Kremchympe Official";
 
+// How much ONE adult pays for the tour (in rupees, no ₹ symbol, no commas).
 const PRICE_PER_PERSON = 2500;
+
+// How much ONE child (below 10) pays for the tour.
 const CHILD_PRICE = 200;
+
+// The smallest amount someone is allowed to pay right now to hold their spot.
 const MIN_PAY_AMOUNT = 500;
+
+// How many people fit in one shared group/batch.
 const BATCH_SIZE = 8;
+
+// How many days before the tour date someone must book by.
 const ADVANCE_NOTICE_DAYS = 3;
+
+// The list of things included in the tour price.
+// To add one: copy a line and change the words inside the quotes.
+// To remove one: delete its whole line.
 const TOUR_SERVICES = [
   "4×4 Jeep",
   "Tour Guide",
@@ -636,8 +666,17 @@ const TOUR_SERVICES = [
   "Entry & Registration Fees",
   "Lunch"
 ];
+// =====================================================================
+// 🛑 END OF EDIT ME BOX — everything below this line is the code that
+// makes the form actually work. No need to change anything past here.
+// =====================================================================
 
 let selectedPay = "";
+
+// Sets the big heading and browser tab title from BUSINESS_NAME above,
+// so you only have to change the name in one place.
+document.title = "Book " + BUSINESS_NAME;
+document.getElementById('pageHeading').textContent = "Book " + BUSINESS_NAME;
 
 function renderPackageDesc(){
   const el = document.getElementById('packageDesc');
@@ -891,21 +930,42 @@ function formatDateForMessage(isoDate){
 }
 
 // Builds the pre-filled WhatsApp message from everything the visitor entered.
+// This only uses fields that actually exist on the form — nothing is made up.
 function buildWhatsAppMessage(data){
-  let msg =
-`New Booking - Book Adventure With US
-Full Name: ${data.name}
-Phone Number: ${data.phone}
-Email: ${data.email || '-'}
-Tour date: ${formatDateForMessage(data.date)}
-Number of Adults: ${data.count}
-Number of Children: ${data.children}
-Payment Method: ${data.paymentMethod}
-Amount Paying Now: ₹${data.paid.toLocaleString('en-IN')}
-Total Amount: ₹${data.total.toLocaleString('en-IN')}`;
-  if(data.balance > 0){
-    msg += `\nBalance Due on Arrival: ₹${data.balance.toLocaleString('en-IN')}`;
+  const line = '━━━━━━━━━━━━━━━━━━━━';
+  const adultCost = data.count * PRICE_PER_PERSON;
+  const childCost = data.children * CHILD_PRICE;
+
+  let msg = `🌿 ${BUSINESS_NAME.toUpperCase()} 🌿\n${line}\n🎫 NEW BOOKING\n\n`;
+
+  msg += `👤 CUSTOMER DETAILS\n`;
+  msg += `• Name: ${data.name}\n`;
+  msg += `• 📱 Phone: ${data.phone}\n`;
+  if(data.email) msg += `• 📧 Email: ${data.email}\n`;
+  msg += `• 📅 Tour Date: ${formatDateForMessage(data.date)}\n\n`;
+
+  msg += `👥 PARTICIPANTS\n`;
+  msg += `• 🧑 Adults: ${data.count}\n`;
+  msg += `• 🧒 Children: ${data.children}\n`;
+  msg += `• 👨‍👩‍👧 Total Guests: ${data.count + data.children}\n\n`;
+
+  msg += `${line}\n💰 PRICE BREAKDOWN\n\n`;
+  msg += `🧑 Adults\n${data.count} × ₹${PRICE_PER_PERSON.toLocaleString('en-IN')} = ₹${adultCost.toLocaleString('en-IN')}\n\n`;
+  if(data.children > 0){
+    msg += `🧒 Children\n${data.children} × ₹${CHILD_PRICE.toLocaleString('en-IN')} = ₹${childCost.toLocaleString('en-IN')}\n\n`;
   }
+  msg += `➡️ Total Amount: ₹${data.total.toLocaleString('en-IN')}\n\n`;
+
+  msg += `${line}\n💳 PAYMENT\n`;
+  msg += `• Payment Method: ${data.paymentMethod}\n`;
+  msg += `• Amount Paying Now: ₹${data.paid.toLocaleString('en-IN')}\n`;
+  if(data.balance > 0){
+    msg += `• Balance Due on Arrival: ₹${data.balance.toLocaleString('en-IN')}\n`;
+  }
+  msg += `• Payment Status: ⏳ Pending Confirmation\n\n`;
+
+  msg += `${line}\n🌿 Thank you for choosing ${BUSINESS_NAME}! 🌿`;
+
   return msg;
 }
 
