@@ -31,7 +31,7 @@
 
 // The name of your tour/business. Shows in the page title, the big
 // heading at the top ("Book ___"), and inside the package box.
-const BUSINESS_NAME = "Kremchympe Adventures";
+const BUSINESS_NAME = "Your Kremchympe Adventures";
 
 // The WhatsApp number bookings get sent to when a visitor submits the
 // form. Country code + number, NO plus sign, NO spaces, NO dashes.
@@ -83,7 +83,7 @@ const TOUR_SERVICES = [
   "First aid & Safety gears",
   "Adventure Activities",
   "Entry & Registration Fees",
-  "Lunch"
+  "Life jacket"
 ];
 
 
@@ -94,7 +94,7 @@ const TOUR_SERVICES = [
 
 // How many people fit in one shared group/batch.
 // Shown as: "Shared batch: 8 people"
-const BATCH_SIZE = 8;
+const BATCH_SIZE = 5;
 
 // How many days before the tour date someone must book by.
 // Shown as: "Book at least 3 days in advance"
