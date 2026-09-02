@@ -26,8 +26,8 @@ const PRICES = {
 
   // Kremchympe Adventures — price is PER PERSON (adults)
   kremChympe: {
-    regular: 3000,   // normal price, in rupees, no commas
-    discount: 15,    // % off when enabled is true
+    regular: 2500,   // normal price, in rupees, no commas
+    discount: 20,    // % off when enabled is true
     enabled: true     // true = show the discount, false = show regular price only
   }
 
