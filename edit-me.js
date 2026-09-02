@@ -83,7 +83,7 @@ const TOUR_SERVICES = [
   "First aid & Safety gears",
   "Adventure Activities",
   "Entry & Registration Fees",
-  "Life jacket"
+  "Chympe Waterfall"
 ];
 
 
@@ -94,7 +94,7 @@ const TOUR_SERVICES = [
 
 // How many people fit in one shared group/batch.
 // Shown as: "Shared batch: 8 people"
-const BATCH_SIZE = 5;
+const BATCH_SIZE = min:4 max:8;
 
 // How many days before the tour date someone must book by.
 // Shown as: "Book at least 3 days in advance"
