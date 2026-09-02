@@ -610,6 +610,7 @@
 
 </div>
 
+<script src="prices.js"></script>
 <script>
 // ---------------------------------------------------------------------
 // This is a fully static, client-only booking form. There is no backend,
@@ -640,8 +641,9 @@ const WHATSAPP_NUMBER = "919863657412";
 const UPI_ID = "suchiangwining-1@oksbi";
 const UPI_PAYEE_NAME = "Team Kremchympe Official";
 
-// How much ONE adult pays for the tour (in rupees, no ₹ symbol, no commas).
-const PRICE_PER_PERSON = 2500;
+// 💰 The adult price and any discount now live in prices.js (next to this
+// file). Open prices.js to change the price or turn a discount on/off —
+// no need to touch anything in here.
 
 // How much ONE child (below 10) pays for the tour.
 const CHILD_PRICE = 200;
@@ -671,6 +673,22 @@ const TOUR_SERVICES = [
 // makes the form actually work. No need to change anything past here.
 // =====================================================================
 
+// ---------------------------------------------------------------------
+// Reads the kremChympe entry from prices.js and works out what price to
+// actually charge. If prices.js hasn't been added or is missing this
+// entry, it safely falls back to a default price instead of breaking.
+// ---------------------------------------------------------------------
+function getEffectivePrice(entry){
+  const fallback = { regular: 2500, price: 2500, discount: 0, onSale: false };
+  if(!entry || typeof entry.regular !== 'number') return fallback;
+  const onSale = !!entry.enabled && entry.discount > 0;
+  const price = onSale ? Math.round(entry.regular * (1 - entry.discount / 100)) : entry.regular;
+  return { regular: entry.regular, price, discount: entry.discount, onSale };
+}
+
+const PRICE_INFO = getEffectivePrice(typeof PRICES !== 'undefined' ? PRICES.kremChympe : null);
+const PRICE_PER_PERSON = PRICE_INFO.price;
+
 let selectedPay = "";
 
 // Sets the big heading and browser tab title from BUSINESS_NAME above,
@@ -682,9 +700,19 @@ function renderPackageDesc(){
   const el = document.getElementById('packageDesc');
   if(!el) return;
   const servicesHtml = TOUR_SERVICES.map(function(s){ return '* ' + s; }).join('\n');
+
+  // Build the price line — shows a 🔥 discount badge and the old price
+  // crossed out when a sale is enabled in prices.js, otherwise just the
+  // regular price.
+  const priceLine = PRICE_INFO.onSale
+    ? '🔥 ' + PRICE_INFO.discount + '% OFF\n' +
+      '<span style="text-decoration:line-through;color:var(--gray-text);">₹' + PRICE_INFO.regular.toLocaleString('en-IN') + '</span>' +
+      ' <strong>₹' + PRICE_INFO.price.toLocaleString('en-IN') + '</strong> per person'
+    : '₹' + PRICE_INFO.price.toLocaleString('en-IN') + ' per person';
+
   el.innerHTML =
-    'Kremchympe Adventures &ndash; Shared Package\n' +
-    '₹' + PRICE_PER_PERSON.toLocaleString('en-IN') + ' per person\n' +
+    BUSINESS_NAME + ' &ndash; Shared Package\n' +
+    priceLine + '\n' +
     'Includes:\n' +
     servicesHtml + ' \n' +
     '<em>Note:\n' +
